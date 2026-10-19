@@ -554,6 +554,25 @@ const MontoInput: React.FC<{
     }
   }, [value, isFocused]);
 
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(true);
+    // Si es 0, dejamos la caja vacía para que escribir 124250 empiece limpio sin pelear con "0,00"
+    if (!value || value === 0) {
+      setText('');
+    } else {
+      // Si es un entero, mostramos solo la parte entera formateada con puntos (ej. 124.250)
+      if (Number.isInteger(value)) {
+        setText(formatLiveARS(String(value)));
+      } else {
+        setText(formatNumberARS(value));
+      }
+    }
+    const target = e.target;
+    setTimeout(() => {
+      target.select();
+    }, 15);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const live = formatLiveARS(e.target.value);
     setText(live);
@@ -579,12 +598,10 @@ const MontoInput: React.FC<{
       <span className="text-primary font-black text-base select-none">$</span>
       <input 
         type="text"
-        value={text}
+        inputMode="decimal"
+        value={isFocused ? text : formatNumberARS(value)}
         onChange={handleChange}
-        onFocus={(e) => {
-          setIsFocused(true);
-          e.target.select();
-        }}
+        onFocus={handleFocus}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         placeholder="0,00"

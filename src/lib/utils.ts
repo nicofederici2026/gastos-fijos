@@ -28,14 +28,23 @@ export function parseNumberARS(str: string): number {
 }
 
 export function formatLiveARS(val: string): string {
+  if (!val) return '';
   let clean = val.replace(/[^\d.,]/g, '');
-  if (clean.includes('.') && !clean.includes(',')) {
-    clean = clean.replace('.', ',');
-  } else {
+  
+  if (clean.includes(',') && clean.includes('.')) {
     clean = clean.replace(/\./g, '');
+  } else if (clean.includes('.')) {
+    const parts = clean.split('.');
+    if (parts.length === 2 && parts[1].length <= 2) {
+      clean = parts[0] + ',' + parts[1];
+    } else {
+      clean = clean.replace(/\./g, '');
+    }
   }
+
   const [intPart = '', decPart] = clean.split(',');
   const formattedInt = intPart ? intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+  
   if (decPart !== undefined) {
     return `${formattedInt || '0'},${decPart.slice(0, 2)}`;
   }
