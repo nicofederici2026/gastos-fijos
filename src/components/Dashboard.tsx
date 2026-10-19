@@ -668,7 +668,7 @@ const VencimientoInput: React.FC<{
 
   return (
     <div className={cn(
-      "inline-flex items-center justify-center rounded-xl border px-2.5 py-1.5 transition-all shadow-inner",
+      "inline-flex items-center justify-center rounded-xl border px-3 py-1.5 transition-all shadow-inner",
       !pagado && isNearDue 
         ? "bg-warning/10 border-warning/40 text-warning" 
         : "bg-black/15 hover:bg-black/30 focus-within:bg-black/40 border-transparent hover:border-border-subtle focus-within:border-primary/50 text-text-main"
@@ -686,8 +686,8 @@ const VencimientoInput: React.FC<{
         placeholder="DD/MM"
         maxLength={5}
         className={cn(
-          "bg-transparent border-none focus:ring-0 p-0 text-center text-xs sm:text-sm font-bold font-mono tracking-wider w-16 outline-none transition-colors placeholder:text-text-muted/40",
-          !pagado && isNearDue ? "text-warning font-black" : "text-text-main"
+          "bg-transparent border-none focus:ring-0 p-0 text-center text-base sm:text-lg font-extrabold font-mono tracking-wider w-20 outline-none transition-colors placeholder:text-text-muted/40",
+          !pagado && isNearDue ? "text-warning font-black" : "text-white"
         )}
       />
     </div>
@@ -744,13 +744,13 @@ const GastoRow: React.FC<{
       )}
     >
       {/* Controles de orden manual (arrastrar o botones arriba/abajo) */}
-      <td className="px-2 py-2.5 text-center">
-        <div className="flex items-center justify-center gap-0.5 select-none">
+      <td className="px-2 py-3 text-center">
+        <div className="flex items-center justify-center gap-1 select-none">
           <div 
-            className="cursor-grab active:cursor-grabbing text-text-muted/40 hover:text-text-muted p-0.5 rounded transition-colors"
+            className="cursor-grab active:cursor-grabbing text-text-muted/40 hover:text-text-muted p-1 rounded transition-colors"
             title="Arrastra para reordenar a mano"
           >
-            <GripVertical className="w-3.5 h-3.5" />
+            <GripVertical className="w-4 h-4" />
           </div>
           <div className="flex flex-col">
             <button
@@ -759,7 +759,7 @@ const GastoRow: React.FC<{
               className="text-text-muted/40 hover:text-primary disabled:opacity-10 disabled:pointer-events-none p-0.5 transition-colors"
               title="Subir"
             >
-              <ChevronUp className="w-3 h-3" />
+              <ChevronUp className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={onMoveDown}
@@ -767,41 +767,41 @@ const GastoRow: React.FC<{
               className="text-text-muted/40 hover:text-primary disabled:opacity-10 disabled:pointer-events-none p-0.5 transition-colors"
               title="Bajar"
             >
-              <ChevronDown className="w-3 h-3" />
+              <ChevronDown className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       </td>
 
       {/* Cuenta */}
-      <td className="px-5 py-2.5">
-        <div className="flex items-center gap-2">
+      <td className="px-5 py-3">
+        <div className="flex items-center gap-2.5">
           <div className="flex flex-col overflow-hidden">
             <span className={cn(
-              "font-bold text-sm truncate",
-              gasto.pagado ? "text-text-muted line-through" : "text-text-main"
+              "font-extrabold text-base sm:text-lg truncate tracking-tight",
+              gasto.pagado ? "text-text-muted line-through" : "text-white"
             )}>{gasto.cuenta_nombre}</span>
             {gasto.cuenta_dato && (
               <span className={cn(
-                "text-[9px] font-medium truncate mt-0.5",
-                gasto.pagado ? "text-text-muted/50" : "text-primary/70"
+                "text-xs font-semibold truncate mt-0.5",
+                gasto.pagado ? "text-text-muted/50" : "text-primary"
               )}>{gasto.cuenta_dato}</span>
             )}
           </div>
-          {isNearDue && <AlertTriangle className="w-3.5 h-3.5 text-warning animate-pulse shrink-0" />}
+          {isNearDue && <AlertTriangle className="w-4 h-4 text-warning animate-pulse shrink-0" />}
         </div>
       </td>
 
       {/* Monto con formato automático y fuente grande */}
-      <td className="px-5 py-2.5">
+      <td className="px-5 py-3">
         <MontoInput 
           value={Number(gasto.monto) || 0}
           onSave={(newMonto) => onUpdate(gasto.id, 'monto', newMonto)}
         />
       </td>
 
-      {/* Vencimiento sólo DD/MM */}
-      <td className="px-4 py-2.5 text-center">
+      {/* Vencimiento sólo DD/MM con la misma tipografía */}
+      <td className="px-4 py-3 text-center">
         <VencimientoInput
           value={gasto.vencimiento}
           selectedYear={selectedYear}
@@ -813,32 +813,32 @@ const GastoRow: React.FC<{
       </td>
 
       {/* Toggle de Pago */}
-      <td className="px-4 py-2.5 text-center">
+      <td className="px-4 py-3 text-center">
         <button 
           onClick={onToggle}
           className={cn(
-            "w-8 h-4 rounded-full p-0.5 transition-all duration-300 flex items-center shadow-inner mx-auto",
+            "w-11 h-6 rounded-full p-0.5 transition-all duration-300 flex items-center shadow-inner mx-auto",
             gasto.pagado ? "bg-primary justify-end" : "bg-border-subtle justify-start"
           )}
         >
-          <div className="w-3 h-3 rounded-full bg-white shadow-sm" />
+          <div className="w-5 h-5 rounded-full bg-white shadow-sm" />
         </button>
       </td>
 
       {/* Nota y acción de eliminar */}
-      <td className="px-5 py-2.5">
-        <div className="flex items-center gap-2">
+      <td className="px-5 py-3">
+        <div className="flex items-center gap-2 group/nota bg-black/15 hover:bg-black/30 focus-within:bg-black/40 border border-transparent hover:border-border-subtle focus-within:border-primary/50 px-2.5 py-1.5 rounded-xl transition-all">
           <input 
             type="text" 
             defaultValue={gasto.comentario || ''}
             onBlur={(e) => onUpdate(gasto.id, 'comentario', e.target.value)}
             placeholder="..."
-            className="bg-transparent border-none focus:ring-0 text-text-main text-xs sm:text-sm w-full transition-all italic placeholder:opacity-20 hover:placeholder:opacity-50 p-0 font-medium"
+            className="bg-transparent border-none focus:ring-0 text-white text-base sm:text-lg w-full transition-all italic placeholder:opacity-20 hover:placeholder:opacity-50 p-0 font-semibold"
           />
           <button 
             onClick={onDelete}
             title="Eliminar gasto"
-            className="text-text-muted hover:text-error opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-error/10 flex-shrink-0"
+            className="text-text-muted hover:text-error opacity-0 group-hover/nota:opacity-100 transition-opacity p-1 rounded hover:bg-error/10 flex-shrink-0"
           >
             <Trash2 className="w-4 h-4" />
           </button>
