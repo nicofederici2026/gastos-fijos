@@ -12,6 +12,25 @@ jobs:
     steps:
       - name: Hacer Ping a Supabase para evitar inactividad
         run: |
-          curl -s -X GET "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/cuentas?select=id&limit=1" \
-          -H "apikey: ${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
-          -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_ANON_KEY }}"
+          if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ] || [ -z "${{ secrets.VITE_SUPABASE_ANON_KEY }}" ]; then
+            echo "::error::Las variables VITE_SUPABASE_URL o VITE_SUPABASE_ANON_KEY no están configuradas en los Secrets del repositorio."
+            exit 1
+          fi
+
+          echo "Enviando consulta a Supabase..."
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" -X GET "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/cuentas?select=id&limit=1" \
+            -H "apikey: ${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_ANON_KEY }}")
+
+          BODY=$(echo "$RESPONSE" | sed -e '$d')
+          STATUS=$(echo "$RESPONSE" | tail -n1 | cut -d':' -f2)
+
+          echo "Código HTTP recibido: $STATUS"
+          echo "Respuesta: $BODY"
+
+          if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 300 ]; then
+            echo "Ping exitoso. Supabase se mantendrá activa."
+          else
+            echo "::error::Error al conectar con Supabase. Código de estado: $STATUS"
+            exit 1
+          fi

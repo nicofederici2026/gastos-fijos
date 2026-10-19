@@ -1,7 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://gdrazemzpzxkqmwsfped.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Dummy key is fine because it won't resolve
+try {
+  process.loadEnvFile('.env.local');
+} catch (e) {
+  // Ignorar si no existe el archivo local
+}
+
+const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://gdrazemzpzxkqmwsfped.supabase.co';
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || '';
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
